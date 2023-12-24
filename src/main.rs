@@ -47,16 +47,14 @@ async fn foramt_date(date:&str)->u64{
 
 //get block number from date
 async fn get_blocks(day:u32,month:u32,year:i32)->u64{
-    let rpc_api_key = std::env::var("RPC_API_KEY").expect("RPC api key must be set.");
+
     let hour = 3600;
     let datetime = chrono::FixedOffset::east_opt(5 * hour)
     .unwrap()
     .with_ymd_and_hms(year, month, day, 0, 0, 0)
     .unwrap();
 
-
-    let web3_client_url=format!("{}{}","https://eth-mainnet.g.alchemy.com/v2/",&rpc_api_key);
-    let client=web3::transports::http::Http::new(&web3_client_url).unwrap();
+    let client=web3::transports::http::Http::new("https://eth-mainnet.g.alchemy.com/v2/7g_cCnr4aef00M2NeaCpHPvmREVArJT0").unwrap();
     let web3client=web3::api::Web3::new(client);
 
     let mut web3_dater=web3_dater::Web3Dater::new(web3client);
@@ -67,7 +65,6 @@ async fn get_blocks(day:u32,month:u32,year:i32)->u64{
 
 //calculate total gas sepnt from start date to end date
 async fn fetch_gas(eth:&str,start_block:u64,end_block:u64)->Result<(), Box<dyn std::error::Error>>{
-    let etherscan_api_key = std::env::var("ETHERSCAN_API_KEY").expect("RPC api key not present.");
     let r_address: Result<H160, _>=std::str::FromStr::from_str(eth);
     let address = match r_address {
         Ok(addr) => { addr },
@@ -76,7 +73,7 @@ async fn fetch_gas(eth:&str,start_block:u64,end_block:u64)->Result<(), Box<dyn s
             return Err(error.into()); }
     };
 
-    let network_api: String=String::from(etherscan_api_key);
+    let network_api: String=String::from("ER9VKT8AXAI2WTPSCRNANN69W67V7PRU59");
     let chain_id = <Chain as std::str::FromStr>::from_str("mainnet").unwrap();
 
     let client = Client::builder()
