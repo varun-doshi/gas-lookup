@@ -6,8 +6,8 @@ authors = ["doshivarun202@gmail.com"]
 license = "MIT OR Apache-2.0"
 description = "A tool to calculate total gas spent by an address within a given time frame"
 readme = "README.md"
-homepage = "https://github.com/you/grrs"
-repository = "https://github.com/you/grrs"
+homepage = "https://github.com/varun-doshi/gas-lookup"
+repository = "https://github.com/varun-doshi/gas-lookup"
 keywords = ["cli", "gas", "ethereum","web3"]
 categories = ["command-line-utilities"]
 
@@ -21,3 +21,4 @@ web3_dater = "0.1.1"
 chrono = "0.4.22"
 web3 = "0.18.0"
 colored = "2.0.4"
+dotenv = "0.15.0"
