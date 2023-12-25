@@ -34,6 +34,12 @@ gas-lookup <ethereum_address> <start date> <end date>
 - `start date`: The start date to calculate gas from
 - `end data`: The date till which gas needs to be calculated
 
+For help,
+
+```bash
+  gas-lookup --help
+```
+
 ## Screenshots
 
 ![gas-lookup](https://drive.google.com/file/d/1abyH5An9JGMwjoztgj5g-k-VA6jD_vvl/view?usp=drive_link)
