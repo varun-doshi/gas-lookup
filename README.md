@@ -1,4 +1,5 @@
 # Gas-Lookup
+![Logo](https://i.postimg.cc/kMf7LZdJ/gas-lookup-logo-1.png)
 
 A cli tool to calculate total gas spent by an address within a given time frame.
 
