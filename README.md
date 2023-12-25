@@ -36,7 +36,7 @@ gas-lookup <ethereum_address> <start date> <end date>
 
 ## Screenshots
 
-![gas-lookup](https://drive.google.com/file/d/1abyH5An9JGMwjoztgj5g-k-VA6jD_vvl/view?usp=drive_link)
+![gas-lookup](https://i.postimg.cc/BbV9brq2/Screenshot-2023-12-25-124056.jpg)
 
 ## License
 
