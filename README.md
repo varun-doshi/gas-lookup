@@ -28,6 +28,12 @@ To run the application:
 gas-lookup <ethereum_address> <start date> <end date>
 ```
 
+For help,
+
+```bash
+  gas-lookup --help
+```
+
 ## Parameters passed are:
 
 - `ethereum address`: The Ethereum mainnet address whose gas spent needs to be calculated
