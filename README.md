@@ -2,7 +2,7 @@
 
 A cli tool to calculate total gas spent by an address within a given time frame.
 
-![Static Badge](https://img.shields.io/badge/v-0.1.2-blue)
+![Static Badge](https://img.shields.io/badge/v-0.1.3-blue)
 [![crates](https://img.shields.io/badge/crates.io-000000?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/crates/gas-lookup)
 [![github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/varun-doshi/gas-lookup)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Varunx10)
@@ -28,17 +28,17 @@ To run the application:
 gas-lookup <ethereum_address> <start date> <end date>
 ```
 
+## Parameters passed are:
+
+- `ethereum address`: The Ethereum mainnet address whose gas spent needs to be calculated
+- `start date`: The start date to calculate gas from. Format - `dd/mm/yyy`
+- `end data`: The date till which gas needs to be calculated. Format - `dd/mm/yyy`
+
 For help,
 
 ```bash
   gas-lookup --help
 ```
-
-## Parameters passed are:
-
-- `ethereum address`: The Ethereum mainnet address whose gas spent needs to be calculated
-- `start date`: The start date to calculate gas from
-- `end data`: The date till which gas needs to be calculated
 
 ## Screenshots
 
