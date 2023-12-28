@@ -19,12 +19,16 @@ async fn main() {
     dotenv().ok();
     let args = Account::parse();
 
-    println!("Address: {:?}, Start Date: {:?}, End Date: {:?}", args.address,args.start_date, args.end_date);
+    verify_address(&args.address);
+    verify_date(&args.start_date);
+    verify_date(&args.end_date);
 
+    println!("Address: {:?}, Start Date: {:?}, End Date: {:?}", args.address,args.start_date, args.end_date);
+    
     println!("{}","Calculating total gas spent:".blue());
-    let start_block=foramt_date(&args.start_date).await;
+    let start_block=format_date(&args.start_date).await;
     // println!("{}{}","Selected Start Block:".blue(),start_block);
-    let end_block=foramt_date(&args.end_date).await;
+    let end_block=format_date(&args.end_date).await;
     // println!("{}{}","Selected End Block:".blue(),end_block);
 
     
@@ -33,8 +37,34 @@ async fn main() {
 
 }
 
-//format date from string to dd,mm,yyyy format
-async fn foramt_date(date:&str)->u64{
+// Verifies whether an ETH address is valid
+fn verify_address(address: &str) {
+    let mut is_valid = true;
+
+    if !address.starts_with("0x") { is_valid = false }
+
+    if address.len() != 42 { is_valid = false }
+
+    if !address[2..].chars().all(|a| a.is_ascii_hexdigit()) {
+        is_valid = false
+    }
+
+    if !is_valid {
+        println!("The address is not a valid Ethereum address.");
+        std::process::exit(1)
+    }
+}
+
+/// Verifies whether  a date is in the correct format and is valid
+fn verify_date(date: &str) {
+    if NaiveDate::parse_from_str(date, "%d/%m/%Y").is_err() {
+        println!("The date is not valid or in invalid format. Example date: 20/12/2023");
+        std::process::exit(1)
+    }
+}
+
+/// format date from string to dd,mm,yyyy format
+async fn format_date(date:&str)->u64{
     let dates:Vec<&str>=date.split("/").collect();
     
     let day=dates[0].parse::<u32>().unwrap();
@@ -65,7 +95,7 @@ async fn get_blocks(day:u32,month:u32,year:i32)->u64{
      block
 }
 
-//calculate total gas sepnt from start date to end date
+//calculate total gas spent from start date to end date
 async fn fetch_gas(eth:&str,start_block:u64,end_block:u64)->Result<(), Box<dyn std::error::Error>>{
     let etherscan_api_key = std::env::var("ETHERSCAN_API_KEY").expect("RPC api key not present.");
     let r_address: Result<H160, _>=std::str::FromStr::from_str(eth);
