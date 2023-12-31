@@ -4,7 +4,7 @@
 
 A cli tool to calculate total gas spent by an address within a given time frame.
 
-![Static Badge](https://img.shields.io/badge/v-0.1.4-blue)
+![Static Badge](https://img.shields.io/badge/v-0.1.5-blue)
 [![crates](https://img.shields.io/badge/crates.io-000000?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/crates/gas-lookup)
 [![github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/varun-doshi/gas-lookup)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Varunx10)
@@ -48,7 +48,7 @@ For help,
 
 ## Updates
 
-### v0.1.4
+### v0.1.5
 
 Support for ENS names have been added. Search with either ETH address or ENS name
 
