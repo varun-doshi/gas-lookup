@@ -13,8 +13,8 @@ categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-clap = { version = "4.0", features = ["derive"] }
-tokio = { version = "1.15", features = ["macros"] }
+clap = { version = "4.0", features = ["derive","std"],default-features = false }
+tokio = { version = "1.15", features = ["macros"],default-features = false }
 ethers={version  ="2.0.11",features = ["abigen","rustls","etherscan"], default-features = false}
 web3_dater = "0.1.1"
 chrono = "0.4.22"
