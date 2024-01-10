@@ -2,14 +2,14 @@
 
 A cli tool to calculate total gas spent by an address within a given time frame.
 
-![Static Badge](https://img.shields.io/badge/v-0.1.5-blue)
+![Static Badge](https://img.shields.io/badge/v-0.1.6-blue)
 [![crates](https://img.shields.io/badge/crates.io-000000?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/crates/gas-lookup)
 [![github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/varun-doshi/gas-lookup)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Varunx10)
 
 ##
 
-A CLI tool to calculate the total amount of Ether spent on gas on transacting on the Ethereum blockchain withing a given date frame.
+A CLI tool to calculate the total amount of Ether spent on gas on transacting on a specific blockchain withing a given date frame.
 
 ## Installation
 
@@ -25,14 +25,19 @@ Once the install is completed, the cli command will be available globally on you
 To run the application:
 
 ```bash
-gas-lookup <ethereum_address> <start date> <end date>
+gas-lookup <address> <start_date> <end_date> [chain]
 ```
 
 ## Parameters passed are:
 
-- `ethereum address`: The Ethereum mainnet address whose gas spent needs to be calculated
+- `address`: The address whose gas spent needs to be calculated
 - `start date`: The start date to calculate gas from. Format - `dd/mm/yyy`
-- `end data`: The date till which gas needs to be calculated. Format - `dd/mm/yyy`
+- `end date`: The date till which gas needs to be calculated. Format - `dd/mm/yyy`
+- [OPTIONAL]`chain`: Specify the chain to claculate gas on. Defaults to Ethereum Mainnet
+  Available options:
+  - `eth`: For Ethereum Mainnet
+  - `pol`: For Polygon Mainnet
+  - `opt`: For Optimism Mainnet
 
 For help,
 
@@ -46,12 +51,20 @@ For help,
 
 ## Updates
 
+### v0.1.6
+
+Support for Polygon Mainnet and Optimism Mainnet has been added. Use the `chain` flag to specific desired chain.
+
+```bash
+gas-lookup <address_OR_ENS_name> <start_date> <end_date> [chain]
+```
+
 ### v0.1.5
 
 Support for ENS names have been added. Search with either ETH address or ENS name
 
 ```bash
-gas-lookup <ETH_address or ENS_name> <start date> <end date>
+gas-lookup <ETH_address OR ENS_name> <start_date> <end_date>
 ```
 
 ## License
