@@ -1,14 +1,15 @@
+use std::process::exit;
 use chrono::prelude::*;
 use clap::Parser;
 use colored::Colorize;
 use dotenv::dotenv;
-use web3::api::Namespace;
-use ethers::{
+use ethers::{ providers::{Provider, Http, Middleware},
     etherscan::{
         account::{Sort, TxListParams},
-        Client,
+        Client
     },
-    types::{Chain, H160}, utils::hex::ToHex,
+    types::{Chain, H160},
+    utils::hex::ToHex,
 };
 
 #[derive(Parser)]
@@ -21,24 +22,27 @@ struct Account {
     end_date: String,
 }
 
-
-impl Account{
-    pub fn validate_date(&self){
-        if NaiveDate::parse_from_str(&self.start_date, "%d/%m/%Y").is_err() || NaiveDate::parse_from_str(&self.end_date, "%d/%m/%Y").is_err(){
+impl Account {
+    pub fn validate_date(&self) {
+        if NaiveDate::parse_from_str(&self.start_date, "%d/%m/%Y").is_err()
+            || NaiveDate::parse_from_str(&self.end_date, "%d/%m/%Y").is_err()
+        {
             println!("The date is not valid or in invalid format. Example date: 20/12/2023");
             std::process::exit(1)
         }
     }
 }
 
-#[tokio::main]
+#[tokio::main] 
 async fn main() {
-    dotenv().ok();
-    let args = Account::parse();
+    gas_spent().await;
+}
 
+async fn gas_spent() {
+    dotenv().ok();
+    let args: Account = Account::parse();
     args.validate_date();
-    let address=classify_address(args.address_or_name).await;
-    
+    let address: String = classify_address(args.address_or_name).await;
 
     println!(
         "Address: {:?}, Start Date: {:?}, End Date: {:?}",
@@ -51,39 +55,40 @@ async fn main() {
     let end_block = format_date(&args.end_date).await;
     // println!("{}{}","Selected End Block:".blue(),end_block);
 
-    let _ = fetch_gas(&address, start_block, end_block).await;
+    let gas: f64 = match fetch_gas(&address, start_block, end_block).await {
+        Ok(result) => result,
+        Err(error) => {
+            println!("Error in calculating cumulative gas {:?}", error);
+            -1.0
+        }
+    };
+
+    println!("{}{} GWEI", "Total Gas Spent:".green(), gas);
 }
 
-async fn classify_address(address: String)->String{
+async fn classify_address(address: String) -> String {
     if address.starts_with("0x") {
         verify_address(&address);
-    }
-    else if address.ends_with(".eth"){
-        let address=ens_to_address(address).await;
-        // println!("{}",address);
+    } else if address.ends_with(".eth") {
+        let address = ens_to_address(address).await;
         return address;
-    }
-    else{
+    } else {
         println!("The  address is not a valid Ethereum address.");
         std::process::exit(1)
     }
     return address;
 }
 
-pub async fn ens_to_address(address: String)->String{
-    let rpc_api_key = std::env::var("RPC_API_KEY").expect("RPC api key must be set.");
-    let web3_client_url = format!(
+async fn ens_to_address(address: String) -> String {
+    let rpc_api_key: String = std::env::var("RPC_API_KEY").expect("RPC api key must be set.");
+    let web3_client_url: String = format!(
         "{}{}",
         "https://eth-mainnet.g.alchemy.com/v2/", &rpc_api_key
     );
-    let client = web3::transports::http::Http::new(&web3_client_url).unwrap();
-    let ens = web3::contract::ens::Ens::new(client);
+    let provider: Provider<Http> = Provider::<Http>::try_from(&web3_client_url).expect("Could not create http provider");
 
-    let ens_result = ens.eth_address(&address).await;
-    match ens_result{
-        Ok(s) => {
-            return format!("{}{}","0x",s.encode_hex::<String>())
-        },
+    match provider.resolve_name(&address).await {
+        Ok(s) => return format!("{}{}", "0x", s.encode_hex::<String>()),
         Err(_) => {
             println!("The ENS name is not a valid.");
             std::process::exit(1)
@@ -113,7 +118,7 @@ fn verify_address(address: &str) {
 async fn format_date(date: &str) -> u64 {
     let dates: Vec<&str> = date.split('/').collect();
 
-    let day = dates[0].parse::<u32>().unwrap();
+    let day: u32 = dates[0].parse::<u32>().unwrap();
     let month: u32 = dates[1].parse::<u32>().unwrap();
     let year: i32 = dates[2].parse::<i32>().unwrap();
 
@@ -122,29 +127,25 @@ async fn format_date(date: &str) -> u64 {
 
 //get block number from date
 async fn get_blocks(day: u32, month: u32, year: i32) -> u64 {
-    let rpc_api_key = std::env::var("RPC_API_KEY").expect("RPC api key must be set.");
-    let hour = 3600;
-    let datetime = chrono::FixedOffset::east_opt(5 * hour)
+    let etherscan_api_key = std::env::var("ETHERSCAN_API_KEY").expect("RPC api key must be set.");
+    let hour: i32 = 3600;
+    let datetime: DateTime<FixedOffset> = chrono::FixedOffset::east_opt(5 * hour)
         .unwrap()
         .with_ymd_and_hms(year, month, day, 0, 0, 0)
         .unwrap();
+    let timestamp: u64 = datetime.timestamp() as u64;
 
-    let web3_client_url = format!(
-        "{}{}",
-        "https://eth-mainnet.g.alchemy.com/v2/", &rpc_api_key
-    );
-    let client = web3::transports::http::Http::new(&web3_client_url).unwrap();
-    let web3client = web3::api::Web3::new(client);
+    let client: Client = Client::new(Chain::Mainnet, etherscan_api_key).unwrap();
 
-    let mut web3_dater = web3_dater::Web3Dater::new(web3client);
-    let block: u64 = web3_dater::Web3Dater::get_block_by_date(&mut web3_dater, datetime, true)
-        .await
-        .unwrap()
-        .number
-        .unwrap()
-        .as_u64();
+    let block_number: u64 = match client.get_block_by_timestamp(timestamp, "after").await {
+        Ok(result) => result.block_number.as_number().unwrap().as_u64(),
+        Err(error) => {
+            println!("Error in blocknumber {:?}", error);
+            exit(1);
+        }
+    };
 
-    block
+    block_number
 }
 
 //calculate total gas spent from start date to end date
@@ -152,7 +153,7 @@ async fn fetch_gas(
     eth: &str,
     start_block: u64,
     end_block: u64,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<f64, Box<dyn std::error::Error>> {
     let etherscan_api_key = std::env::var("ETHERSCAN_API_KEY").expect("RPC api key not present.");
     let r_address: Result<H160, _> = std::str::FromStr::from_str(eth);
     let address = match r_address {
@@ -193,17 +194,10 @@ async fn fetch_gas(
         let gas_price = txns[txn].gas_price.unwrap().as_u128() as f64;
         let gwei_gas_price: f64 = gas_price / 1_000_000_000.0;
         let gas_used = txns[0].gas_used.as_u64() as f64;
-        // println!("{}{}","Showing txn:".blue(),txn);
-        // println!("Txn Hash:{:?} ",txns[txn].hash.value().unwrap());
-        // println!("{:?}",gwei_gas_price);
-        // println!("{:?}",gas_used);
 
         let total_gas = gwei_gas_price * gas_used;
-        // println!("Gas Spent:{:?}",total_gas);
         cumulative_gas_used += total_gas;
-        // println!("{}{}","Updated value: ".yellow(),cumulative_gas_used);
     }
 
-    println!("{}{} GWEI", "Total Gas Spent:".green(), cumulative_gas_used);
-    Ok(())
+    Ok(cumulative_gas_used)
 }
