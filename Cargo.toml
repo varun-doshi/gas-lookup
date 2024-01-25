@@ -15,7 +15,6 @@ categories = ["command-line-utilities"]
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
 tokio = { version = "1.15", features = ["full"] }
-getrandom = { version = "0.2", features = ["js"] }
 ethers={version  ="2.0.11",features = ["abigen","rustls","etherscan"], default-features = false}
 chrono = "0.4.22"
 colored = "2.0.4"
