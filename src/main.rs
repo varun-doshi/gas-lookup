@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use std::time::Instant;
 use clap::{Parser,ValueEnum};
 use colored::Colorize;
 use dotenv::dotenv;
@@ -41,7 +42,7 @@ impl Chains{
         let mut keys=Vec::with_capacity(4);
         match self{
             Chains::eth => {
-                keys=vec!["https://eth-mainnet.g.alchemy.com/v2/7g_cCnr4aef00M2NeaCpHPvmREVArJT0","ER9VKT8AXAI2WTPSCRNANN69W67V7PRU59","mainnnet","GWEI"];
+                keys=vec!["https://eth-mainnet.g.alchemy.com/v2/7g_cCnr4aef00M2NeaCpHPvmREVArJT0","ER9VKT8AXAI2WTPSCRNANN69W67V7PRU59","mainnet","GWEI"];
             },
             Chains::pol => {
                 keys=vec!["https://polygon-mainnet.g.alchemy.com/v2/4I9z653r1BmGa5uNjsvu1cTLQptS3PG8","YFV2FG443XMWB774JJ4PD56Q7UBWFQ6KE1","polygon","MATIC"];
@@ -80,9 +81,11 @@ async fn main() {
         address, args.start_date, args.end_date, args.chain.get_keys()[2]
     );
 
+    let start = Instant::now();
     println!("{}", "Calculating total gas spent:".blue());
     let start_block = format_date(&args.start_date,rpc_client).await;
     let end_block = format_date(&args.end_date,rpc_client).await;
+    println!("Elapsed: {:?}", start.elapsed());
 
 
     let _ = fetch_gas(&address, start_block, end_block,&network_key,&args.chain.get_keys()[2],&args.chain.get_keys()[3]).await;
