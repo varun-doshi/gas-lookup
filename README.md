@@ -9,6 +9,10 @@ A cli tool to calculate total gas spent by an address within a given time frame.
 [![github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/varun-doshi/gas-lookup)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Varunx10)
 
+### NOTE:
+This repo has not been updated and is not in sync with the current published package. This repository will be updated soon
+
+
 ##
 
 A CLI tool to calculate the total amount of Ether spent on gas on transacting on the Ethereum blockchain withing a given date frame.
