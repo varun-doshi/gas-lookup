@@ -2,7 +2,7 @@
 
 A cli tool to calculate total gas spent by an address within a given time frame.
 
-![Static Badge](https://img.shields.io/badge/v-0.1.8-blue)
+![Static Badge](https://img.shields.io/badge/v-0.1.9-blue)
 [![crates](https://img.shields.io/badge/crates.io-000000?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/crates/gas-lookup)
 [![github](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/varun-doshi/gas-lookup)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Varunx10)
@@ -51,7 +51,7 @@ For help,
 
 ## Updates
 
-### v0.1.8
+### v0.1.8 & v0.1.9
 
 Gas-lookup has been optimized for more than 37% faster result generation. Throught Rust's powerful thread concurrency, dates and blocks are calculated in parallel executions.
 
@@ -59,11 +59,11 @@ Gas-lookup has been optimized for more than 37% faster result generation. Throug
 
 ###### Before
 
-![pre-optimized](./assets/pre-optimize.jpg)
+![pre-optimized](https://i.postimg.cc/XNLLFsRX/pre-optimize.jpg)
 
 ###### After
 
-![pre-optimized](./assets/optimized.jpg)
+![optimized](https://i.postimg.cc/sDBWXKyk/optimized.jpg)
 
 ### v0.1.7
 
