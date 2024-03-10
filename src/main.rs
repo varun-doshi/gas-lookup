@@ -9,6 +9,8 @@ use ethers::{
     types::{Chain, H160},
     utils::hex::ToHex,
 };
+use std::time::Instant;
+use std::{sync::Arc, thread};
 use web3::api::Namespace;
 
 #[derive(Parser)]
@@ -97,9 +99,15 @@ async fn main() {
     );
 
     println!("{}", "Calculating total gas spent:");
-    let start_block = format_date(&args.start_date, rpc_client).await;
-    let end_block = format_date(&args.end_date, rpc_client).await;
 
+    let start = Instant::now();
+
+    let (start_block, end_block) = tokio::join!(
+        format_date(&args.start_date, &rpc_client),
+        format_date(&args.end_date, &rpc_client)
+    );
+
+    println!("Elapsed time: {:?}", start.elapsed());
     let _ = fetch_gas(
         &address,
         start_block,
@@ -205,10 +213,7 @@ async fn fetch_gas(
     let address = match r_address {
         Ok(addr) => addr,
         Err(error) => {
-            eprintln!(
-                "{}",
-                "Invalid ETH address. Please provide valid address"
-            );
+            eprintln!("{}", "Invalid ETH address. Please provide valid address");
             return Err(error.into());
         }
     };
@@ -239,7 +244,7 @@ async fn fetch_gas(
     for txn in 0..txns.len() {
         let gas_price = txns[txn].gas_price.unwrap().as_u128() as f64;
         let gwei_gas_price: f64 = gas_price / 1_000_000_000.0;
-        let gas_used = txns[0].gas_used.as_u64() as f64;
+        let gas_used = txns[txn].gas_used.as_u64() as f64;
         // println!("{}{}","Showing txn:".blue(),txn);
         // println!("Txn Hash:{:?} ",txns[txn].hash.value().unwrap());
         // println!("{:?}",gwei_gas_price);
@@ -251,11 +256,6 @@ async fn fetch_gas(
         // println!("{}{}","Updated value: ".yellow(),cumulative_gas_used);
     }
 
-    println!(
-        "{}{} {}",
-        "Total Gas Spent:",
-        cumulative_gas_used,
-        currency
-    );
+    println!("{}{} {}", "Total Gas Spent:", cumulative_gas_used, currency);
     Ok(())
 }
